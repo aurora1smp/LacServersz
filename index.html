@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0b14">
+<title>AuroraHost LAC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0b0b14;--bg2:#12121f;--card:#171729;--card2:#1e1e34;--line:#2a2a45;
+  --text:#ecebff;--muted:#9a98bf;--pink:#ff3d9a;--cyan:#22e3ff;--lime:#9dff5c;
+  --amber:#ffb547;--red:#ff4d6a;--radius:16px;
+  --grad:linear-gradient(135deg,var(--pink),#9b5cff 55%,var(--cyan));
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif}
+body{min-height:100vh;padding-bottom:calc(84px + env(safe-area-inset-bottom));
+  background:radial-gradient(900px 500px at 100% -10%,#ff3d9a22,transparent 60%),radial-gradient(800px 500px at -10% 10%,#22e3ff18,transparent 60%),var(--bg)}
+a{color:var(--cyan)}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:960px;margin:0 auto;padding:0 16px}
+
+/* header */
+header{position:sticky;top:0;z-index:20;background:#0b0b14cc;backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.hbar{display:flex;align-items:center;gap:12px;height:62px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:-.02em;font-size:18px}
+.logo i{width:30px;height:30px;border-radius:9px;background:var(--grad);display:grid;place-items:center;font-style:normal;font-size:16px;box-shadow:0 0 18px #ff3d9a66}
+.logo small{color:var(--muted);font-weight:600;font-size:12px}
+.spacer{flex:1}
+.chip{display:flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border-radius:999px;background:var(--card);border:1px solid var(--line);cursor:pointer}
+.chip img{width:26px;height:26px;border-radius:50%;object-fit:cover;background:var(--card2)}
+.chip span{font-size:13px;font-weight:600;max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* buttons */
+.btn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,opacity .2s}
+.btn:active{transform:scale(.97)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.primary{background:var(--grad);color:#fff;box-shadow:0 6px 22px #ff3d9a44}
+.btn.ghost{background:var(--card2);border:1px solid var(--line)}
+.btn.danger{background:#ff4d6a22;color:var(--red);border:1px solid #ff4d6a55}
+.btn.sm{padding:8px 12px;font-size:13px;border-radius:10px}
+.btn.block{width:100%}
+
+/* stats */
+.hero{padding:22px 0 8px}
+.hero h1{margin:0 0 6px;font-size:26px;letter-spacing:-.03em;line-height:1.15}
+.hero h1 b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{margin:0;color:var(--muted);font-size:14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px}
+.stat b{display:block;font-size:22px;font-weight:800}
+.stat span{font-size:12px;color:var(--muted)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 10px var(--lime);margin-right:6px;animation:pulse 1.6s infinite}
+@keyframes pulse{50%{opacity:.35}}
+
+/* filters */
+.search{display:flex;gap:8px;margin-bottom:10px}
+.input,select.input,textarea.input{width:100%;background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;outline:none}
+.input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #22e3ff22}
+.pills{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:none;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap}
+.pill.on{background:#ff3d9a22;border-color:var(--pink);color:#fff}
+
+/* server cards */
+.grid{display:grid;gap:12px;margin-top:12px}
+@media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;position:relative;overflow:hidden}
+.srv-top{display:flex;align-items:flex-start;gap:10px}
+.srv-title{font-weight:800;font-size:16px;margin:0 0 3px;word-break:break-word}
+.srv-sub{font-size:13px;color:var(--muted);word-break:break-word}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;padding:4px 8px;border-radius:8px;background:var(--card2);border:1px solid var(--line);white-space:nowrap}
+.badge.mode{color:var(--cyan);border-color:#22e3ff44;background:#22e3ff14}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0}
+.timer{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px}
+.timer b{color:var(--text);font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--grad);border-radius:99px;transition:width 1s linear}
+.bar.low i{background:linear-gradient(90deg,var(--amber),var(--red))}
+.srv-actions{display:flex;gap:8px;margin-top:14px}
+.srv-actions .btn.primary{flex:1}
+.desc{font-size:13px;color:#cfcde8;margin:10px 0 0;line-height:1.45;word-break:break-word}
+.empty{text-align:center;padding:40px 16px;color:var(--muted)}
+.empty b{display:block;font-size:40px;margin-bottom:8px}
+
+/* forms */
+.section{margin:18px 0}
+.section h2{font-size:19px;margin:0 0 4px;letter-spacing:-.02em}
+.section > p{color:var(--muted);margin:0 0 14px;font-size:14px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+.field small{display:block;color:var(--muted);font-size:12px;margin-top:5px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{padding:12px;border-radius:12px;background:var(--bg2);border:1px solid var(--line);cursor:pointer;font-weight:600;font-size:13px;text-align:left}
+.seg button.on{border-color:var(--pink);background:#ff3d9a18}
+.seg button small{display:block;color:var(--muted);font-weight:500;margin-top:3px}
+
+/* manager */
+.mgr-time{font-size:46px;font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-align:center;margin:8px 0}
+.stepper{display:flex;align-items:center;justify-content:center;gap:14px;margin:12px 0}
+.stepper button{width:44px;height:44px;border-radius:12px;background:var(--card2);border:1px solid var(--line);font-size:22px;font-weight:700;cursor:pointer}
+.stepper b{font-size:24px;min-width:90px;text-align:center}
+
+/* steps list */
+.steps{counter-reset:s;list-style:none;padding:0;margin:0}
+.steps li{counter-increment:s;position:relative;padding:0 0 14px 40px;font-size:14px;line-height:1.5;color:#d8d6f2}
+.steps li::before{content:counter(s);position:absolute;left:0;top:0;width:28px;height:28px;border-radius:9px;background:var(--card2);border:1px solid var(--line);display:grid;place-items:center;font-weight:800;font-size:13px;color:var(--cyan)}
+.note{background:#ffb54714;border:1px solid #ffb54744;border-radius:12px;padding:12px 14px;font-size:13px;line-height:1.5;color:#ffe2b5}
+.code{display:flex;align-items:center;gap:8px;background:var(--bg2);border:1px dashed var(--line);border-radius:12px;padding:10px 12px;font-family:ui-monospace,monospace;font-size:14px;word-break:break-all}
+.code span{flex:1}
+
+/* bottom nav */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:#0e0e1aee;backdrop-filter:blur(14px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .wrap{display:flex}
+nav.tabs button{flex:1;background:none;border:0;padding:10px 4px 12px;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px}
+nav.tabs button i{font-style:normal;font-size:20px;filter:grayscale(1);opacity:.7}
+nav.tabs button.on{color:#fff}
+nav.tabs button.on i{filter:none;opacity:1}
+.view{display:none}.view.on{display:block}
+
+/* modal & toast */
+.modal{position:fixed;inset:0;z-index:50;background:#000a;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal.on{display:flex}
+.sheet{background:var(--bg2);border:1px solid var(--line);border-radius:22px 22px 0 0;width:100%;max-width:560px;max-height:88vh;overflow:auto;padding:20px 18px calc(22px + env(safe-area-inset-bottom));animation:up .22s ease}
+@media(min-width:720px){.modal{align-items:center}.sheet{border-radius:22px}}
+@keyframes up{from{transform:translateY(40px);opacity:0}}
+.sheet h3{margin:0 0 4px;font-size:20px}
+.sheet .x{float:right;background:var(--card2);border:1px solid var(--line);width:36px;height:36px;border-radius:10px;cursor:pointer;font-size:18px}
+#toast{position:fixed;left:50%;bottom:calc(96px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;z-index:60;background:#fff;color:#111;font-weight:700;font-size:14px;padding:11px 16px;border-radius:12px;transition:.25s;pointer-events:none;max-width:90vw;text-align:center}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+.setup{margin:24px 0;padding:18px;border-radius:16px;border:1px solid #ff4d6a66;background:#ff4d6a12;line-height:1.55;font-size:14px}
+.muted{color:var(--muted)}
+.hr{height:1px;background:var(--line);margin:16px 0}
+.report{border-left:3px solid var(--red)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap hbar">
+    <div class="logo"><i>⚡</i><div>AuroraHost<br><small>Servidores de LAC</small></div></div>
+    <div class="spacer"></div>
+    <div id="authArea"></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div id="setupWarn" class="setup" hidden>
+    <b>⚠️ Falta configurar o Firebase.</b><br>
+    Abra o arquivo <code>index.html</code>, procure por <code>firebaseConfig</code> e cole a configuração do seu projeto (Console do Firebase → ⚙️ Configurações do projeto → Seus apps → Web).
+  </div>
+
+  <!-- SERVIDORES -->
+  <section id="v-servers" class="view on">
+    <div class="hero">
+      <h1>Servidores <b>ao vivo</b></h1>
+      <p>Mapas da comunidade abertos agora. Cada servidor fica online o tempo que o dono quiser.</p>
+    </div>
+    <div class="stats">
+      <div class="stat"><b id="stServers">0</b><span><span class="dot"></span>online</span></div>
+      <div class="stat"><b id="stPlayers">0</b><span>jogadores</span></div>
+      <div class="stat"><b id="stSlots">0</b><span>vagas livres</span></div>
+    </div>
+    <div class="search"><input id="q" class="input" placeholder="Buscar mapa, servidor ou dono…" autocomplete="off"></div>
+    <div class="pills" id="modePills"></div>
+    <div class="grid" id="list"></div>
+  </section>
+
+  <!-- HOSPEDAR -->
+  <section id="v-host" class="view">
+    <div id="hostArea"></div>
+  </section>
+
+  <!-- AJUDA -->
+  <section id="v-help" class="view">
+    <div class="section">
+      <h2>Como entrar num servidor</h2>
+      <p>Depende de como o dono abriu o servidor.</p>
+      <div class="card">
+        <b>🌐 Share-Server (Comunidade)</b>
+        <ol class="steps" style="margin-top:12px">
+          <li>Abra o Los Angeles Crimes.</li>
+          <li>Vá na aba <b>Community</b>.</li>
+          <li>Procure pelo nome do servidor mostrado aqui e toque para entrar.</li>
+        </ol>
+      </div>
+      <div class="card" style="margin-top:12px">
+        <b>🔌 Por IP</b>
+        <ol class="steps" style="margin-top:12px">
+          <li>Toque em <b>Entrar</b> no servidor e copie o endereço.</li>
+          <li>No LAC, abra a aba de conexão por IP (aba LAN) e cole o endereço.</li>
+          <li>Toque em <b>Connect</b>.</li>
+        </ol>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Como hospedar</h2>
+      <ol class="steps">
+        <li>Entre com sua conta Google na aba <b>Hospedar</b>.</li>
+        <li>Preencha nome, mapa e modo. Se tiver o link do mapa, cole: quem entrar consegue baixar antes.</li>
+        <li>Abra o mapa no LAC e ligue o servidor: <b>Interaction Menu → Server Options → Share-Server</b> (mais fácil) ou por IP com a porta <b>7777 UDP</b> aberta no roteador.</li>
+        <li>Toque em <b>Publicar</b>. Seu servidor aparece na lista. A cada 30 minutos toque em <b>Continuo online</b>. Se esquecer, ele sai da lista sozinho (assim a lista nunca fica com servidor fantasma).</li>
+      </ol>
+      <div class="card" style="margin-bottom:12px"><b>📡 Como descobrir seu IP</b>
+        <ol class="steps" style="margin-top:12px">
+          <li>Conecte o celular no <b>Wi-Fi da sua casa</b> (o mesmo do roteador).</li>
+          <li>No formulário de hospedar, toque em <b>Detectar meu IP</b>. Ele preenche sozinho o seu IP público, que é o que os amigos usam.</li>
+          <li>Para o IP funcionar, abra a porta <b>7777 UDP</b> no roteador, apontando para o IP local do celular (Wi-Fi → detalhes da rede, algo como 192.168.x.x).</li>
+        </ol></div>
+      <div class="note">💡 O servidor roda no <b>seu celular</b>: mantenha o LAC aberto enquanto ele estiver na lista. Se sua operadora usa CGNAT, a conexão por IP não funciona. Nesse caso use o Share-Server.</div>
+    </div>
+    <div class="section">
+      <h2>Regras</h2>
+      <ol class="steps">
+        <li>Um servidor por conta de cada vez.</li>
+        <li>Nada de nomes ofensivos, golpes ou links maliciosos.</li>
+        <li>Servidores denunciados podem ser removidos e o dono banido.</li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section id="v-admin" class="view">
+    <div class="section">
+      <h2>Painel do admin</h2>
+      <p>Denúncias recebidas. Remova servidores ou bana contas.</p>
+      <div id="reports" class="grid"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabs"><div class="wrap" id="tabs">
+  <button data-v="servers" class="on"><i>🎮</i>Servidores</button>
+  <button data-v="host"><i>🚀</i>Hospedar</button>
+  <button data-v="help"><i>📘</i>Ajuda</button>
+  <button data-v="admin" id="adminTab" hidden><i>🛡️</i>Admin</button>
+</div></nav>
+
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+<div id="toast"></div>
+
+<script type="module">
+/* =========================================================
+   1) COLE AQUI A CONFIGURAÇÃO DO SEU PROJETO FIREBASE
+   ========================================================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAKmJNcs0YvfnWb0Y3TZd3PKjhBr2X-79s",
+  authDomain: "lacserverz.firebaseapp.com",
+  projectId: "lacserverz",
+  storageBucket: "lacserverz.firebasestorage.app",
+  messagingSenderId: "647768443844",
+  appId: "1:647768443844:web:d7ef794451c19f86f77291",
+  measurementId: "G-VER6PV7TPG"
+};
+
+/* ========== Ajustes do site ========== */
+const SESSION_MS = 30 * 60 * 1000 - 20 * 1000; // 30 min (com margem p/ relógio do celular)
+const RENEW_WINDOW_MS = 5 * 60 * 1000;          // aviso nos 5 min finais (renovar é liberado a qualquer hora)
+const MODES = {
+  freeroam: "Free Roam", tdm: "Team Deathmatch", zombie: "Zumbi",
+  race: "Corrida", soccer: "Futebol", roleplay: "Roleplay", outro: "Outro"
+};
+const REGIONS = ["BR", "LATAM", "América do Norte", "Europa", "Ásia", "Outro"];
+
+const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const safeUrl = u => /^https?:\/\//i.test(u || "") ? esc(u) : "";
+const fmt = ms => { ms = Math.max(0, ms); const m = Math.floor(ms / 60000), s = Math.floor(ms % 60000 / 1000); return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`; };
+const ls = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} } };
+let toastT;
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("on"), 2600); }
+async function copy(text, label = "Copiado!") {
+  try { await navigator.clipboard.writeText(text); toast(label); }
+  catch { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); toast(label); } catch { toast("Não deu para copiar"); } ta.remove(); }
+}
+function errMsg(e) {
+  const c = e?.code || "";
+  if (c.includes("permission-denied")) return "Sem permissão. Você pode estar banido, ter dados inválidos ou o relógio do celular está errado.";
+  if (c.includes("unavailable")) return "Sem conexão com o servidor. Tente de novo.";
+  if (c.includes("popup-closed")) return "Login cancelado.";
+  if (c.includes("unauthorized-domain")) return "Domínio não autorizado no Firebase Auth (veja o LEIA-ME).";
+  return e?.message || "Algo deu errado.";
+}
+function openModal(html) { $("#sheet").innerHTML = html; $("#modal").classList.add("on"); }
+function closeModal() { $("#modal").classList.remove("on"); }
+$("#modal").addEventListener("click", e => { if (e.target.id === "modal" || e.target.closest("[data-close]")) closeModal(); });
+
+/* ---------- tabs ---------- */
+function show(v) {
+  document.querySelectorAll(".view").forEach(el => el.classList.toggle("on", el.id === "v-" + v));
+  document.querySelectorAll("#tabs button").forEach(b => b.classList.toggle("on", b.dataset.v === v));
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) show(b.dataset.v); });
+
+/* ---------- state ---------- */
+const st = { warned: false, user: null, admin: false, servers: [], mode: "all", q: "", cleaned: new Set(), unsubReports: null };
+
+if (!firebaseConfig.apiKey) {
+  $("#setupWarn").hidden = false;
+  $("#list").innerHTML = `<div class="empty"><b>🔧</b>Configure o Firebase para ativar o site.</div>`;
+  throw new Error("firebaseConfig vazio");
+}
+
+let fbApp, fbAuth, fbStore;
+try {
+  [fbApp, fbAuth, fbStore] = await Promise.all([import(FB + "firebase-app.js"), import(FB + "firebase-auth.js"), import(FB + "firebase-firestore.js")]);
+} catch (e) {
+  $("#list").innerHTML = `<div class="empty"><b>📡</b>Não deu para carregar o Firebase. Verifique a internet e recarregue a página.</div>`;
+  throw e;
+}
+const { initializeApp } = fbApp;
+const { getAuth, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, onAuthStateChanged, signOut } = fbAuth;
+const { getFirestore, collection, doc, setDoc, updateDoc, deleteDoc, getDoc, addDoc, onSnapshot, query, where, orderBy, limit, serverTimestamp, Timestamp } = fbStore;
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+auth.languageCode = "pt";
+
+/* ---------- auth ---------- */
+async function login() {
+  const p = new GoogleAuthProvider();
+  try { await signInWithPopup(auth, p); }
+  catch (e) {
+    if (["auth/popup-blocked", "auth/operation-not-supported-in-this-environment", "auth/cancelled-popup-request"].includes(e.code)) await signInWithRedirect(auth, p);
+    else toast(errMsg(e));
+  }
+}
+getRedirectResult(auth).catch(e => toast(errMsg(e)));
+
+function renderAuth() {
+  const a = $("#authArea");
+  if (!st.user) { a.innerHTML = `<button class="btn primary sm" id="loginBtn">Entrar</button>`; $("#loginBtn").onclick = login; return; }
+  const u = st.user;
+  const photo = safeUrl(u.photoURL);
+  a.innerHTML = `<div class="chip" id="me">${photo ? `<img src="${photo}" alt="" referrerpolicy="no-referrer">` : `<span style="width:26px;height:26px;border-radius:50%;background:var(--grad);display:grid;place-items:center;font-weight:800">${esc((u.displayName || "J")[0].toUpperCase())}</span>`}<span>${esc(u.displayName || "Jogador")}</span></div>`;
+  $("#me").onclick = () => { openModal(`
+    <button class="x" data-close>✕</button>
+    <h3>${esc(u.displayName || "Jogador")}</h3>
+    <p class="muted" style="margin:0 0 14px">${esc(u.email || "")}${st.admin ? " · 🛡️ Admin" : ""}</p>
+    <div class="field"><label>Seu UID</label>
+      <div class="code"><span>${esc(u.uid)}</span><button class="btn ghost sm" id="cpUid">Copiar</button></div>
+      <small>Para virar admin, crie no Firestore o documento <b>admins/${esc(u.uid)}</b>.</small></div>
+    <button class="btn danger block" id="outBtn">Sair da conta</button>`);
+  $("#cpUid").onclick = () => copy(u.uid, "UID copiado");
+  $("#outBtn").onclick = async () => { await signOut(auth); closeModal(); toast("Você saiu"); };
+  };
+}
+
+onAuthStateChanged(auth, async u => {
+  st.user = u; st.admin = false;
+  if (u) { try { st.admin = (await getDoc(doc(db, "admins", u.uid))).exists(); } catch {} }
+  $("#adminTab").hidden = !st.admin;
+  renderAuth(); renderHost(); renderList();
+  watchReports();
+});
+
+/* ---------- live servers ---------- */
+onSnapshot(
+  query(collection(db, "servers"), where("expiresAt", ">", Timestamp.now()), orderBy("expiresAt", "desc"), limit(200)),
+  snap => {
+    st.servers = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderList(); renderHost(); openDeepLink();
+  },
+  e => { $("#list").innerHTML = `<div class="empty"><b>⚠️</b>${esc(errMsg(e))}</div>`; }
+);
+
+const alive = () => st.servers.filter(s => s.expiresAt && s.expiresAt.toMillis() > Date.now());
+const myServer = () => st.user && alive().find(s => s.id === st.user.uid);
+
+/* pills */
+function renderPills() {
+  const counts = {}; alive().forEach(s => counts[s.mode] = (counts[s.mode] || 0) + 1);
+  const opts = [["all", "Todos", alive().length], ...Object.entries(MODES).map(([k, v]) => [k, v, counts[k] || 0])];
+  $("#modePills").innerHTML = opts.map(([k, v, n]) => `<button class="pill ${st.mode === k ? "on" : ""}" data-m="${k}">${v}${n ? ` · ${n}` : ""}</button>`).join("");
+}
+$("#modePills").addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (b) { st.mode = b.dataset.m; renderList(); } });
+$("#q").addEventListener("input", e => { st.q = e.target.value.trim().toLowerCase(); renderList(); });
+
+function cardHTML(s) {
+  const left = s.expiresAt.toMillis() - Date.now();
+  const pct = Math.min(100, left / (30 * 60000) * 100);
+  const full = s.players >= s.maxPlayers;
+  const mine = st.user && s.id === st.user.uid;
+  return `<div class="card" data-id="${esc(s.id)}">
+    <div class="srv-top">
+      <div style="flex:1;min-width:0">
+        <p class="srv-title">${esc(s.title)}</p>
+        <div class="srv-sub">🗺️ ${esc(s.mapName)} · por <b>${esc(s.ownerName)}</b></div>
+      </div>
+      <span class="badge mode">${esc(MODES[s.mode] || s.mode)}</span>
+    </div>
+    <div class="meta">
+      <span class="badge" style="${full ? "color:var(--red)" : ""}">👥 ${s.players}/${s.maxPlayers}</span>
+      <span class="badge">${s.connectType === "share" ? "🌐 Share-Server" : "🔌 IP"}</span>
+      ${s.region ? `<span class="badge">📍 ${esc(s.region)}</span>` : ""}
+      ${s.mapLink ? `<span class="badge">⬇️ Mapa</span>` : ""}
+      ${mine ? `<span class="badge" style="color:var(--lime)">★ Seu</span>` : ""}
+    </div>
+    ${s.description ? `<p class="desc">${esc(s.description)}</p>` : ""}
+    <div style="margin-top:12px">
+      <div class="timer"><span>Tempo restante</span><b data-exp="${s.expiresAt.toMillis()}">${fmt(left)}</b></div>
+      <div class="bar ${left < RENEW_WINDOW_MS ? "low" : ""}"><i data-bar="${s.expiresAt.toMillis()}" style="width:${pct}%"></i></div>
+    </div>
+    <div class="srv-actions">
+      <button class="btn primary" data-join="${esc(s.id)}" ${full ? "disabled" : ""}>${full ? "Lotado" : "Entrar"}</button>
+      <button class="btn ghost" data-share="${esc(s.id)}" title="Compartilhar">🔗</button>
+      ${mine ? "" : `<button class="btn ghost" data-report="${esc(s.id)}" title="Denunciar">🚩</button>`}
+      ${st.admin && !mine ? `<button class="btn danger" data-adm="${esc(s.id)}" title="Admin">🛡️</button>` : ""}
+    </div>
+  </div>`;
+}
+
+function renderList() {
+  const list = alive();
+  $("#stServers").textContent = list.length;
+  $("#stPlayers").textContent = list.reduce((a, s) => a + (s.players || 0), 0);
+  $("#stSlots").textContent = list.reduce((a, s) => a + Math.max(0, s.maxPlayers - s.players), 0);
+  renderPills();
+  const shown = list
+    .filter(s => st.mode === "all" || s.mode === st.mode)
+    .filter(s => !st.q || [s.title, s.mapName, s.ownerName, s.description].join(" ").toLowerCase().includes(st.q))
+    .sort((a, b) => (b.players - a.players) || (b.expiresAt.toMillis() - a.expiresAt.toMillis()));
+  $("#list").innerHTML = shown.length ? shown.map(cardHTML).join("") :
+    `<div class="empty"><b>🌙</b>${list.length ? "Nenhum servidor com esse filtro." : "Nenhum servidor online agora."}<br><br><button class="btn primary" onclick="document.querySelector('[data-v=host]').click()">Hospedar o primeiro</button></div>`;
+}
+
+$("#list").addEventListener("click", e => {
+  const j = e.target.closest("[data-join]"), sh = e.target.closest("[data-share]"), r = e.target.closest("[data-report]"), a = e.target.closest("[data-adm]");
+  const find = id => st.servers.find(s => s.id === id);
+  if (j) joinModal(find(j.dataset.join));
+  if (sh) shareServer(find(sh.dataset.share));
+  if (r) reportModal(find(r.dataset.report));
+  if (a) adminModal(find(a.dataset.adm));
+});
+
+/* ---------- join / share ---------- */
+function joinModal(s) {
+  if (!s) return;
+  const link = safeUrl(s.mapLink);
+  openModal(`
+    <button class="x" data-close>✕</button>
+    <h3>${esc(s.title)}</h3>
+    <p class="muted" style="margin:0 0 16px">🗺️ ${esc(s.mapName)} · ${esc(MODES[s.mode] || "")} · 👥 ${s.players}/${s.maxPlayers}</p>
+    ${link ? `<div class="field"><label>1. Baixe o mapa (opcional)</label>
+      <div class="code"><span>${link}</span><button class="btn ghost sm" id="cpMap">Copiar</button></div>
+      <small>No LAC, cole o link no campo <b>Map Name</b> da aba Editor e toque em Create.</small></div>` : ""}
+    ${s.connectType === "share" ? `
+      <div class="field"><label>${link ? "2" : "1"}. Entre pela Comunidade</label>
+      <ol class="steps"><li>Abra o LAC e vá na aba <b>Community</b>.</li><li>Procure por <b>${esc(s.title)}</b> (dono: ${esc(s.ownerName)}).</li><li>Toque para entrar.</li></ol></div>` : `
+      <div class="field"><label>${link ? "2" : "1"}. Conecte pelo IP</label>
+      <div class="code"><span>${esc(s.address)}</span><button class="btn primary sm" id="cpAddr">Copiar</button></div>
+      <small>No LAC, cole o endereço na conexão por IP e toque em Connect.</small></div>`}
+    <button class="btn ghost block" data-close>Fechar</button>`);
+  if (link) $("#cpMap").onclick = () => copy(s.mapLink, "Link do mapa copiado");
+  if (s.connectType === "ip") $("#cpAddr").onclick = () => copy(s.address, "Endereço copiado");
+}
+function shareServer(s) {
+  if (!s) return;
+  const url = location.origin + location.pathname + "#s=" + encodeURIComponent(s.id);
+  const text = `🎮 ${s.title} está online no LAC! Mapa: ${s.mapName}`;
+  if (navigator.share) navigator.share({ title: s.title, text, url }).catch(() => {});
+  else copy(`${text}\n${url}`, "Link copiado");
+}
+let deepDone = false;
+function openDeepLink() {
+  if (deepDone) return;
+  const m = location.hash.match(/^#s=(.+)$/); if (!m) { deepDone = true; return; }
+  const s = alive().find(x => x.id === decodeURIComponent(m[1]));
+  deepDone = true;
+  if (s) joinModal(s); else toast("Esse servidor já fechou");
+}
+
+/* ---------- report ---------- */
+function reportModal(s) {
+  if (!s) return;
+  if (!st.user) { toast("Entre com sua conta para denunciar"); login(); return; }
+  openModal(`
+    <button class="x" data-close>✕</button>
+    <h3>Denunciar servidor</h3>
+    <p class="muted" style="margin:0 0 14px">${esc(s.title)} · ${esc(s.ownerName)}</p>
+    <div class="field"><label>Motivo</label>
+      <select class="input" id="rpType"><option>Nome ou descrição ofensiva</option><option>Link malicioso ou golpe</option><option>Servidor falso / não existe</option><option>Outro</option></select></div>
+    <div class="field"><label>Detalhes (opcional)</label><textarea class="input" id="rpTxt" rows="3" maxlength="240"></textarea></div>
+    <button class="btn danger block" id="rpSend">Enviar denúncia</button>`);
+  $("#rpSend").onclick = async () => {
+    const reason = ($("#rpType").value + ($("#rpTxt").value.trim() ? " — " + $("#rpTxt").value.trim() : "")).slice(0, 300);
+    try {
+      await addDoc(collection(db, "reports"), { serverId: s.id, serverTitle: s.title.slice(0, 40), ownerUid: s.ownerUid, reason, reporterUid: st.user.uid, createdAt: serverTimestamp() });
+      closeModal(); toast("Denúncia enviada. Obrigado!");
+    } catch (e) { toast(errMsg(e)); }
+  };
+}
+
+/* ---------- host ---------- */
+let draft = ls.get("aurorahost_draft", { ownerName: "", title: "", mapName: "", mapLink: "", mode: "freeroam", connectType: "share", address: "", region: "BR", maxPlayers: 16, description: "" });
+
+function renderHost() {
+  const h = $("#hostArea");
+  if (!st.user) {
+    h.innerHTML = `<div class="section"><h2>Hospede seu mapa</h2><p>Entre com o Google para publicar seu servidor. Ele fica online o tempo que você quiser.</p>
+      <div class="card" style="text-align:center;padding:28px 16px"><div style="font-size:44px">🚀</div>
+      <p class="muted">Grátis, sem fila e sem cartão.<br>O servidor roda no seu celular, e o site leva os jogadores até ele.</p>
+      <button class="btn primary" id="hLogin">Entrar com Google</button></div></div>`;
+    h.dataset.mode = "login";
+    $("#hLogin").onclick = login; return;
+  }
+  const mine = myServer();
+  if (mine) return renderManager(mine);
+  if (h.dataset.mode === "form") return; // não recria o formulário enquanto o usuário digita
+  h.dataset.mode = "form";
+  const d = draft;
+  h.innerHTML = `<div class="section"><h2>Novo servidor</h2><p>Ligue o servidor no LAC primeiro, depois publique aqui.</p>
+  <form id="hf" class="card" autocomplete="off">
+    <div class="field"><label>Seu nick no LAC</label><input class="input" name="ownerName" maxlength="24" required minlength="2" value="${esc(d.ownerName || st.user.displayName || "")}"></div>
+    <div class="field"><label>Nome do servidor</label><input class="input" name="title" maxlength="40" required minlength="3" placeholder="Ex: Favela RP 24h" value="${esc(d.title)}"></div>
+    <div class="row">
+      <div class="field"><label>Mapa</label><input class="input" name="mapName" maxlength="40" required placeholder="Nome do mapa" value="${esc(d.mapName)}"></div>
+      <div class="field"><label>Modo</label><select class="input" name="mode">${Object.entries(MODES).map(([k, v]) => `<option value="${k}" ${d.mode === k ? "selected" : ""}>${v}</option>`).join("")}</select></div>
+    </div>
+    <div class="field"><label>Link do mapa (opcional)</label><input class="input" name="mapLink" type="url" maxlength="300" placeholder="https://…" value="${esc(d.mapLink)}"><small>O link que o LAC aceita no campo Map Name. Quem entrar consegue baixar antes.</small></div>
+    <div class="field"><label>Como os jogadores entram</label>
+      <div class="seg" id="ctSeg">
+        <button type="button" data-ct="share" class="${d.connectType === "share" ? "on" : ""}">🌐 Share-Server<small>Pela aba Community. Funciona com CGNAT.</small></button>
+        <button type="button" data-ct="ip" class="${d.connectType === "ip" ? "on" : ""}">🔌 IP<small>Precisa da porta 7777 UDP aberta.</small></button>
+      </div></div>
+    <div class="field" id="addrField" ${d.connectType === "ip" ? "" : "hidden"}><label>Endereço</label><input class="input" name="address" maxlength="80" placeholder="Ex: 201.10.20.30" value="${esc(d.address)}">
+      <button type="button" class="btn ghost sm" id="ipBtn" style="margin-top:8px">📡 Detectar meu IP</button>
+      <small>Precisa estar no Wi-Fi da sua casa (não nos dados móveis) e com a porta 7777 UDP aberta no roteador.</small></div>
+    <div class="row">
+      <div class="field"><label>Região</label><select class="input" name="region">${REGIONS.map(r => `<option ${d.region === r ? "selected" : ""}>${r}</option>`).join("")}</select></div>
+      <div class="field"><label>Máx. jogadores</label><input class="input" name="maxPlayers" type="number" min="1" max="64" value="${d.maxPlayers}"></div>
+    </div>
+    <div class="field"><label>Descrição (opcional)</label><textarea class="input" name="description" rows="3" maxlength="200" placeholder="Regras, discord, o que tem no mapa…">${esc(d.description)}</textarea></div>
+    <button class="btn primary block" id="pubBtn">🚀 Publicar servidor</button>
+  </form></div>`;
+  let ct = d.connectType;
+  $("#ctSeg").onclick = e => { const b = e.target.closest("[data-ct]"); if (!b) return; ct = b.dataset.ct; document.querySelectorAll("#ctSeg button").forEach(x => x.classList.toggle("on", x === b)); $("#addrField").hidden = ct !== "ip"; };
+  $("#ipBtn").onclick = async () => {
+    const b = $("#ipBtn"); b.disabled = true; b.textContent = "Detectando…";
+    try {
+      const r = await fetch("https://api.ipify.org?format=json", { cache: "no-store" });
+      const { ip } = await r.json();
+      document.querySelector("[name=address]").value = ip; toast("IP detectado: " + ip);
+    } catch { toast("Não deu para detectar. Veja seu IP em whatismyipaddress.com"); }
+    b.disabled = false; b.textContent = "📡 Detectar meu IP";
+  };
+  $("#hf").onsubmit = async e => {
+    e.preventDefault();
+    const f = new FormData(e.target);
+    const data = {
+      ownerName: f.get("ownerName").trim(), title: f.get("title").trim(), mapName: f.get("mapName").trim(),
+      mapLink: f.get("mapLink").trim(), mode: f.get("mode"), connectType: ct,
+      address: ct === "ip" ? f.get("address").trim() : "", region: f.get("region"),
+      maxPlayers: Math.min(64, Math.max(1, parseInt(f.get("maxPlayers")) || 16)), description: f.get("description").trim()
+    };
+    if (data.mapLink && !/^https?:\/\//i.test(data.mapLink)) return toast("O link do mapa precisa começar com http");
+    if (ct === "ip" && data.address.length < 3) return toast("Coloque o endereço de conexão");
+    draft = data; ls.set("aurorahost_draft", data);
+    $("#pubBtn").disabled = true;
+    try {
+      await setDoc(doc(db, "servers", st.user.uid), {
+        ...data, ownerUid: st.user.uid, players: 1,
+        createdAt: serverTimestamp(), updatedAt: serverTimestamp(),
+        expiresAt: Timestamp.fromMillis(Date.now() + SESSION_MS)
+      });
+      toast("Servidor publicado! 🎉");
+    } catch (err) { toast(errMsg(err)); $("#pubBtn").disabled = false; }
+  };
+}
+
+function renderManager(s) {
+  const h = $("#hostArea");
+  h.dataset.mode = "mgr";
+  const left = s.expiresAt.toMillis() - Date.now();
+  h.innerHTML = `<div class="section"><h2>Seu servidor está online <span class="dot"></span></h2><p>Mantenha o LAC aberto enquanto ele estiver na lista.</p>
+  <div class="card">
+    <p class="srv-title" style="text-align:center">${esc(s.title)}</p>
+    <div class="srv-sub" style="text-align:center">🗺️ ${esc(s.mapName)} · ${esc(MODES[s.mode])}</div>
+    <div class="mgr-time" data-exp="${s.expiresAt.toMillis()}">${fmt(left)}</div>
+    <div class="bar ${left < RENEW_WINDOW_MS ? "low" : ""}"><i data-bar="${s.expiresAt.toMillis()}" style="width:${left / (30 * 60000) * 100}%"></i></div>
+    <div class="hr"></div>
+    <div style="text-align:center;font-size:13px" class="muted">Jogadores no servidor</div>
+    <div class="stepper"><button id="pMinus">−</button><b><span id="pNum">${s.players}</span>/${s.maxPlayers}</b><button id="pPlus">+</button></div>
+    <button class="btn primary block" id="renewBtn">✅ Continuo online (+30 min)</button>
+    <small class="muted" style="display:block;text-align:center;margin-top:6px" id="renewHint">Toque antes do tempo acabar para continuar na lista</small>
+    <div class="row" style="margin-top:12px">
+      <button class="btn ghost" id="shBtn">🔗 Divulgar</button>
+      <button class="btn danger" id="endBtn">⏹ Encerrar</button>
+    </div>
+  </div></div>`;
+  let n = s.players, t;
+  const push = () => { clearTimeout(t); t = setTimeout(() => updateDoc(doc(db, "servers", s.id), { players: n, updatedAt: serverTimestamp() }).catch(e => toast(errMsg(e))), 600); };
+  $("#pMinus").onclick = () => { if (n > 0) { n--; $("#pNum").textContent = n; push(); } };
+  $("#pPlus").onclick = () => { if (n < s.maxPlayers) { n++; $("#pNum").textContent = n; push(); } };
+  $("#renewBtn").onclick = async () => {
+    try { await updateDoc(doc(db, "servers", s.id), { expiresAt: Timestamp.fromMillis(Date.now() + SESSION_MS), updatedAt: serverTimestamp() }); st.warned = false; toast("Tempo renovado! ✅"); }
+    catch (e) { toast(errMsg(e)); }
+  };
+  $("#shBtn").onclick = () => shareServer(s);
+  $("#endBtn").onclick = async () => {
+    if (!confirm("Encerrar e tirar o servidor da lista?")) return;
+    try { await deleteDoc(doc(db, "servers", s.id)); h.dataset.mode = ""; toast("Servidor encerrado"); } catch (e) { toast(errMsg(e)); }
+  };
+}
+
+/* ---------- admin ---------- */
+function adminModal(s) {
+  if (!s || !st.admin) return;
+  openModal(`
+    <button class="x" data-close>✕</button>
+    <h3>🛡️ Moderar</h3>
+    <p class="muted" style="margin:0 0 14px">${esc(s.title)} · ${esc(s.ownerName)}<br><small>UID: ${esc(s.ownerUid)}</small></p>
+    <button class="btn danger block" id="aDel">Remover servidor</button>
+    <div style="height:10px"></div>
+    <button class="btn danger block" id="aBan">Remover e banir dono</button>`);
+  $("#aDel").onclick = () => modRemove(s.id).then(closeModal);
+  $("#aBan").onclick = () => modBan(s.ownerUid, s.id).then(closeModal);
+}
+async function modRemove(id) { try { await deleteDoc(doc(db, "servers", id)); toast("Servidor removido"); } catch (e) { toast(errMsg(e)); } }
+async function modBan(uid, serverId) {
+  const reason = prompt("Motivo do banimento:", "Violação das regras");
+  if (reason === null) return;
+  try {
+    await setDoc(doc(db, "bans", uid), { reason: reason.slice(0, 200), by: st.user.uid, createdAt: serverTimestamp() });
+    if (serverId) await deleteDoc(doc(db, "servers", serverId)).catch(() => {});
+    toast("Conta banida");
+  } catch (e) { toast(errMsg(e)); }
+}
+function watchReports() {
+  if (st.unsubReports) { st.unsubReports(); st.unsubReports = null; }
+  if (!st.admin) return;
+  st.unsubReports = onSnapshot(query(collection(db, "reports"), orderBy("createdAt", "desc"), limit(100)), snap => {
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    $("#adminTab").innerHTML = `<i>🛡️</i>Admin${items.length ? ` (${items.length})` : ""}`;
+    $("#reports").innerHTML = items.length ? items.map(r => {
+      const live = alive().find(s => s.id === r.serverId);
+      return `<div class="card report">
+        <b>${esc(r.serverTitle)}</b> ${live ? `<span class="badge" style="color:var(--lime)">online</span>` : `<span class="badge">offline</span>`}
+        <p class="desc">${esc(r.reason)}</p>
+        <small class="muted">${r.createdAt ? r.createdAt.toDate().toLocaleString("pt-BR") : ""} · dono ${esc(r.ownerUid)}</small>
+        <div class="srv-actions">
+          ${live ? `<button class="btn danger sm" data-rdel="${esc(r.serverId)}">Remover</button>` : ""}
+          <button class="btn danger sm" data-rban="${esc(r.ownerUid)}" data-rsrv="${esc(r.serverId)}">Banir</button>
+          <button class="btn ghost sm" data-rok="${esc(r.id)}">Descartar</button>
+        </div></div>`;
+    }).join("") : `<div class="empty"><b>✅</b>Nenhuma denúncia.</div>`;
+  }, e => toast(errMsg(e)));
+}
+$("#reports").addEventListener("click", async e => {
+  const d = e.target.closest("[data-rdel]"), b = e.target.closest("[data-rban]"), ok = e.target.closest("[data-rok]");
+  if (d) modRemove(d.dataset.rdel);
+  if (b) modBan(b.dataset.rban, b.dataset.rsrv);
+  if (ok) { try { await deleteDoc(doc(db, "reports", ok.dataset.rok)); } catch (er) { toast(errMsg(er)); } }
+});
+
+/* ---------- relógio: timers + limpeza ---------- */
+setInterval(() => {
+  const now = Date.now();
+  document.querySelectorAll("[data-exp]").forEach(el => el.textContent = fmt(+el.dataset.exp - now));
+  document.querySelectorAll("[data-bar]").forEach(el => {
+    const left = +el.dataset.bar - now;
+    el.style.width = Math.max(0, Math.min(100, left / (30 * 60000) * 100)) + "%";
+    el.parentElement.classList.toggle("low", left < RENEW_WINDOW_MS);
+  });
+  const rb = $("#renewBtn");
+  if (rb) {
+    const left = +document.querySelector(".mgr-time").dataset.exp - now;
+    $("#renewHint").textContent = left < RENEW_WINDOW_MS ? "⚠️ Falta pouco! Toque para não sair da lista" : "Toque antes do tempo acabar para continuar na lista";
+    if (left < RENEW_WINDOW_MS && !st.warned) { st.warned = true; try { navigator.vibrate && navigator.vibrate([300, 150, 300]); } catch {} toast("⚠️ Seu servidor sai da lista em 5 min. Toque em Continuo online!"); }
+  }
+  // servidores vencidos: some da tela e apaga do banco
+  const expired = st.servers.filter(s => s.expiresAt.toMillis() <= now);
+  if (expired.length) {
+    expired.forEach(s => { if (!st.cleaned.has(s.id)) { st.cleaned.add(s.id); deleteDoc(doc(db, "servers", s.id)).catch(() => {}); } });
+    st.servers = st.servers.filter(s => s.expiresAt.toMillis() > now);
+    if ($("#hostArea").dataset.mode === "mgr") $("#hostArea").dataset.mode = "";
+    renderList(); renderHost();
+  }
+}, 1000);
+</script>
+</body>
+</html>
